@@ -1,0 +1,5 @@
+{
+  "name": "15-Puzzle Grandmaster",
+  "description": "A sophisticated 15-puzzle solver featuring A* algorithm logic, AI-powered strategy insights, and customizable configurations.",
+  "requestFramePermissions": []
+}
