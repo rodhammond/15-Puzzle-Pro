@@ -1,5 +1,5 @@
-# 15-Puzzle Tactical Engine
-### High-Performance Computational Solver & AI Strategic Advisor
+# 15-Puzzle Game (Pro Edition)
+### Includes High-Performance Computational Engine Solvers & AI Strategic Advisor
 
 ![React](https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react)
 ![Gemini AI](https://img.shields.io/badge/AI-Gemini%20Flash-orange?style=for-the-badge)
