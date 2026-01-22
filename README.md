@@ -10,7 +10,7 @@
 ## 🖥️ Game Dashboard
 
 <div align="center">
-  <img src="images/15-Puzzle Game Dashboard.png" width="600" alt="15-Puzzle Game Dashboard" style="border-radius: 20px; border: 4px solid #334155;" />
+  <img src="images/15-Puzzle_Game_Dashboard.png" width="600" alt="15-Puzzle Game Dashboard" style="border-radius: 20px; border: 4px solid #334155;" />
   <p><i><b>Figure 1:</b> Board design and layout.</i></p>
 </div>
 
@@ -50,7 +50,7 @@ The number of possible positions of the 24 puzzle is $\frac{25!}{2} \approx 7.76
 
 ### 🧮 Math Algorithm Engines
 This game includes algorithm search engines which navigates a search space of approximately **10.46 trillion** reachable states ($16! / 2$) to present the player with auto-solving help options. The following three well known search engines have been implemented and selected due to their ability to work quickly within the 4x4 search space. At any given puzzle arrangement, each may offer a particular solution or no solution at all given deliberate timeout constraints.
-1.  **Supreme Navigator (IDA*)**: Guaranteed to find the *optimal* path. Uses iterative deepening to manage memory efficiently.
+1.  **Supreme Navigator (IDA\*)**: Guaranteed to find the *optimal* path. Uses iterative deepening to manage memory efficiently.
 2.  **Instant Velocity (Greedy-Best)**: Prioritizes speed. Uses Manhattan Distance to find "good enough" paths instantly.
 3.  **Heuristics**: Combines **Manhattan Distance** with **Linear Conflict** detection to prune trillions of sub-optimal paths.
 
