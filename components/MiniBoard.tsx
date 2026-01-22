@@ -17,7 +17,7 @@ const MiniBoard: React.FC<MiniBoardProps> = ({ board, title, isActive, matchesWi
           {title}
         </span>
       )}
-      <div className={`grid grid-cols-4 gap-1.5 p-2 bg-slate-800 rounded-xl border-4 transition-colors duration-500 shadow-xl w-32 h-32 ${isActive ? 'border-red-500 shadow-red-900/20' : 'border-slate-700'}`}>
+      <div className={`grid grid-cols-4 gap-2 p-3 bg-slate-800 rounded-xl border-4 transition-colors duration-500 shadow-xl w-44 h-44 ${isActive ? 'border-red-500 shadow-red-900/20' : 'border-slate-700'}`}>
         {board.map((val, idx) => {
           if (val === 0) {
             return <div key={idx} className="bg-slate-900 rounded-[4px]" />;
@@ -29,7 +29,7 @@ const MiniBoard: React.FC<MiniBoardProps> = ({ board, title, isActive, matchesWi
           return (
             <div
               key={idx}
-              className={`rounded-[3px] flex items-center justify-center text-[10px] font-black transition-colors ${
+              className={`rounded-[3px] flex items-center justify-center text-sm font-black transition-colors ${
                 isMatched 
                   ? 'bg-green-500 text-white' 
                   : isOdd ? 'bg-red-600 text-white' : 'bg-white text-slate-900'
