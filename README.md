@@ -9,10 +9,7 @@
 
 ## 🖥️ Game Dashboard
 
-<div align="center">
-  <img src="images/15-Puzzle_Game_Dashboard.png" width="600" alt="15-Puzzle Game Dashboard" style="border-radius: 20px; border: 4px solid #334155;" />
-  <p><i><b>Figure 1:</b> Board design and layout.</i></p>
-</div>
+![15-Puzzle_Game_Dashboard](https://github.com/user-attachments/assets/1b597d62-9408-497e-a21c-bb406650c8db)
 
 ---
 
