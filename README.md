@@ -10,8 +10,8 @@
 ## 🖥️ Game Dashboard
 
 <div align="center">
-  <img src="components/15-Puzzle%20Game%20Dashboard.png" width="600" alt="15-Puzzle Game Dashboard" style="border-radius: 20px; border: 4px solid #334155;" />
-  <p><i><b>Figure 1:</b> Landing board design and layout.</i></p>
+  <img src="images/15-Puzzle Game Dashboard.png" width="600" alt="15-Puzzle Game Dashboard" style="border-radius: 20px; border: 4px solid #334155;" />
+  <p><i><b>Figure 1:</b> Board design and layout.</i></p>
 </div>
 
 ---
