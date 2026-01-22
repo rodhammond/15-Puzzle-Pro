@@ -1,10 +1,8 @@
-
 import { GoogleGenAI } from "@google/genai";
 import { BoardState, Move } from "../types";
 
 /**
  * Provides a sophisticated strategic insight for the 15-puzzle.
- * Injects domain knowledge about solving strategies (Row-by-Row, Corner-first, etc.)
  */
 export const getAIHint = async (
   currentBoard: BoardState, 
@@ -13,7 +11,6 @@ export const getAIHint = async (
 ): Promise<string> => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
-  // Convert boards to a readable 4x4 grid representation for the LLM
   const formatBoard = (b: BoardState) => {
     let output = "";
     for (let i = 0; i < 4; i++) {
@@ -39,18 +36,10 @@ export const getAIHint = async (
     SOLVER CONTEXT:
     ${nextMoveContext}
 
-    STRATEGIC DIRECTIVES:
-    1. Focus on solving Row 1 (Top) first, then Row 2.
-    2. For Row 1: Solve tiles 1, 2, then 3. To place 4, "park" it below its target and rotate the 3-4 sequence in.
-    3. If the first two rows are solved, focus on the bottom-left 2x2 area.
-    4. If the user has a custom goal (not 1-15), adapt your strategy to that specific pattern.
-    5. Mention specific tile numbers and their positions (row, column).
-
     INSTRUCTIONS:
     - Provide a professional, tactical, and brief (2-3 sentences) insight.
     - Use terms like "Manhattan efficiency," "Parking the tile," or "Sequence rotation."
     - Be highly encouraging but technically precise.
-    - Do not just list the numbers; explain the MOVEMENT logic.
   `;
 
   try {
@@ -64,9 +53,9 @@ export const getAIHint = async (
       }
     });
     
-    return response.text || "Your current alignment shows high Manhattan efficiency. Continue the rotation to clear the path for the second row.";
+    return response.text || "Your current alignment shows high Manhattan efficiency.";
   } catch (error) {
     console.error("Gemini Coach Error:", error);
-    return "Tactical communication interrupted. Focus on stabilizing the upper-left quadrant to reduce the search space for the lower tiles.";
+    return "Tactical communication interrupted. Focus on stabilizing the upper-left quadrant.";
   }
 };
