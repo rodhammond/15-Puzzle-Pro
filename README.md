@@ -9,7 +9,7 @@
 
 ## 🖥️ Game Dashboard
 
-![15-Puzzle_Game_Dashboard](https://github.com/user-attachments/assets/1b597d62-9408-497e-a21c-bb406650c8db)
+<img width="1540" height="1120" alt="15-Puzzle_Game_Dashboard" src="https://github.com/user-attachments/assets/9bb4058d-6b11-40d6-86a1-aec39a8fecb2" />
 
 ---
 
