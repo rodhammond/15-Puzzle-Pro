@@ -2,10 +2,12 @@ import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import confetti from 'canvas-confetti';
 import PuzzleBoard from './components/PuzzleBoard';
 import MiniBoard from './components/MiniBoard';
+import { ApiKeySettings } from './components/ApiKeySettings';
 import { BoardState, SolverResult, AlgorithmType } from './types';
 import { GOAL_STATE, PRESETS } from './constants';
 import { PuzzleSolver } from './services/puzzleSolver';
-import { getAIHint } from './services/geminiService';
+import { getAIHint, hasApiKey } from './services/geminiService';
+import { getAlgorithmicHint } from './services/algorithmicHintService';
 
 type DifficultyLevel = 'Evaluating...' | 'Trivial' | 'Easy' | 'Medium' | 'Hard' | 'Extreme' | 'Insane' | 'N/A';
 
@@ -22,6 +24,11 @@ const App: React.FC = () => {
   const [solverStatus, setSolverStatus] = useState<'idle' | 'searching' | 'no-path' | 'timeout' | 'error'>('idle');
   const [aiHint, setAiHint] = useState<string | null>(null);
   const [isAiLoading, setIsAiLoading] = useState(false);
+  const [hasAiKey, setHasAiKey] = useState(false);
+
+  useEffect(() => {
+    setHasAiKey(hasApiKey());
+  }, []);
   const [solveResult, setSolveResult] = useState<SolverResult | null>(null);
   const [inputMode, setInputMode] = useState(false);
   const [isVisualizing, setIsVisualizing] = useState(false);
@@ -216,15 +223,24 @@ const App: React.FC = () => {
     if (isAiLoading || isSystemOffline || isPaused || !isCurrentlySolvable) return;
     setIsAiLoading(true);
     setAiHint(null);
-    try {
-      const nextMove = (solveResult && playbackIndex < solveResult.path.length - 1) ? solveResult.path[playbackIndex + 1] : undefined;
-      const hint = await getAIHint(board, targetGoal, nextMove);
-      setAiHint(hint);
-    } catch (e) {
-      setAiHint("Focus on solving the top-left corner sequentially.");
-    } finally {
-      setIsAiLoading(false);
+    const nextMove = (solveResult && playbackIndex < solveResult.path.length - 1) ? solveResult.path[playbackIndex + 1] : undefined;
+
+    // Check if AI is available (user key or env key)
+    if (hasApiKey()) {
+      try {
+        const hint = await getAIHint(board, targetGoal, nextMove);
+        setAiHint(hint);
+        setIsAiLoading(false);
+        return;
+      } catch (e) {
+        // Fall through to algorithmic hint
+      }
     }
+
+    // Use algorithmic hint as fallback or default
+    const algorithmicHint = getAlgorithmicHint(board, targetGoal, nextMove);
+    setAiHint(algorithmicHint);
+    setIsAiLoading(false);
   };
 
   const shuffleBoard = (sb: BoardState) => {
@@ -330,12 +346,20 @@ const App: React.FC = () => {
           </section>
 
           <section className={`bg-slate-800/30 p-10 rounded-[3rem] border border-slate-700/50 backdrop-blur-3xl shadow-2xl transition-all duration-700 ${isSystemOffline ? 'opacity-20' : 'opacity-100'}`}>
-            <h2 className="text-xl font-black text-slate-500 uppercase tracking-widest mb-8">AI Strategic Advisor</h2>
+            <div className="flex justify-between items-start mb-8">
+              <h2 className="text-xl font-black text-slate-500 uppercase tracking-widest">AI Strategic Advisor</h2>
+              <ApiKeySettings onKeyChange={(has) => setHasAiKey(has)} />
+            </div>
             <div className="text-lg text-slate-300 italic mb-8 min-h-[100px]">{aiHint || "The system is synchronized. Request a briefing for maneuvers."}</div>
             <div className="flex flex-col gap-3">
               <button onClick={handleRequestHint} disabled={isAiLoading || isSystemOffline} className="w-full py-5 bg-blue-600/10 border-2 border-blue-500/30 text-blue-500 rounded-2xl font-black uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all">
                  {isAiLoading ? 'BRIEFING...' : 'REQUEST STRATEGIC BRIEFING'}
               </button>
+              {!hasAiKey && (
+                <p className="text-xs text-slate-500 text-center">
+                  Using algorithmic hints. Add API key for AI-powered insights.
+                </p>
+              )}
             </div>
           </section>
         </div>

@@ -1,15 +1,38 @@
 import { GoogleGenAI } from "@google/genai";
 import { BoardState, Move } from "../types";
+import { getUserApiKey } from "./algorithmicHintService";
+
+/**
+ * Gets the active API key (user-provided takes priority over env)
+ */
+const getActiveApiKey = (): string | null => {
+  const userKey = getUserApiKey();
+  if (userKey) return userKey;
+  const envKey = process.env.API_KEY;
+  if (envKey && envKey !== 'undefined') return envKey;
+  return null;
+};
+
+/**
+ * Checks if AI hints are available
+ */
+export const hasApiKey = (): boolean => {
+  return Boolean(getActiveApiKey());
+};
 
 /**
  * Provides a sophisticated strategic insight for the 15-puzzle.
  */
 export const getAIHint = async (
-  currentBoard: BoardState, 
+  currentBoard: BoardState,
   targetGoal: BoardState,
   nextOptimalMove?: Move
 ): Promise<string> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const apiKey = getActiveApiKey();
+  if (!apiKey) {
+    throw new Error("No API key available");
+  }
+  const ai = new GoogleGenAI({ apiKey });
   
   const formatBoard = (b: BoardState) => {
     let output = "";
