@@ -292,10 +292,10 @@ const App: React.FC = () => {
   };
 
   const engines: { id: AlgorithmType; label: string; tag: string; color: string; desc: string; precision: string }[] = [
-    { id: 'Iterative-Deepening', label: 'Supreme Navigator', tag: 'GRANDMASTER', color: 'bg-blue-500/10 text-blue-500', desc: 'Optimal results. Best for deep 4x4 paths.', precision: 'Mathematical Optimum' },
-    { id: 'Bidirectional', label: 'Dual Convergence', tag: 'MEET-IN-MIDDLE', color: 'bg-purple-500/10 text-purple-500', desc: 'Searches from both ends. Fast optimal paths.', precision: 'Mathematical Optimum' },
-    { id: 'Greedy-Best', label: 'Instant Velocity', tag: 'HIGH VELOCITY', color: 'bg-yellow-500/10 text-yellow-500', desc: 'Instant solving. Paths may be suboptimal.', precision: 'Approximation' },
-    { id: 'A*', label: 'Tactical Analysis', tag: 'RELIABLE', color: 'bg-green-500/10 text-green-500', desc: 'Optimal for shallow to medium shuffles.', precision: 'Weighted Optimum' },
+    { id: 'Iterative-Deepening', label: 'Supreme Navigator', tag: 'BEST SOLUTION', color: 'bg-blue-500/10 text-blue-500', desc: 'Finds the shortest possible solution. May take longer on hard puzzles.', precision: 'Fewest Moves' },
+    { id: 'Bidirectional', label: 'Dual Convergence', tag: 'SMART & FAST', color: 'bg-purple-500/10 text-purple-500', desc: 'Works from both ends at once. Fast AND finds the best path.', precision: 'Fewest Moves' },
+    { id: 'Greedy-Best', label: 'Instant Velocity', tag: 'LIGHTNING', color: 'bg-yellow-500/10 text-yellow-500', desc: 'Solves instantly but uses more moves than necessary.', precision: 'Quick Solution' },
+    { id: 'A*', label: 'Tactical Analysis', tag: 'BALANCED', color: 'bg-green-500/10 text-green-500', desc: 'Good balance of speed and efficiency for most puzzles.', precision: 'Near-Optimal' },
   ];
 
   const stepsRemaining = solveResult ? solveResult.steps - playbackIndex : 0;

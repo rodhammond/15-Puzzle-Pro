@@ -48,12 +48,12 @@ The number of possible positions of the 24 puzzle is $\frac{25!}{2} \approx 7.76
 ### 🧮 Math Algorithm Engines
 This game includes algorithm search engines which navigate a search space of approximately **10.46 trillion** reachable states ($16! / 2$) to present the player with auto-solving help options. Four powerful search engines have been implemented:
 
-| Engine | Tag | Optimal? | Description |
-|--------|-----|----------|-------------|
-| **Supreme Navigator** | GRANDMASTER | Yes | IDA* with iterative deepening. Memory efficient, guaranteed optimal. |
-| **Dual Convergence** | MEET-IN-MIDDLE | Yes | Bidirectional A* searching from both start and goal. Dramatically faster for complex puzzles. |
-| **Tactical Analysis** | RELIABLE | Near | Weighted A* for shallow to medium shuffles. |
-| **Instant Velocity** | HIGH VELOCITY | No | Greedy best-first search. Prioritizes speed over optimality. |
+| Engine | Tag | Best For | What It Does |
+|--------|-----|----------|--------------|
+| **Supreme Navigator** | BEST SOLUTION | Perfect solutions | Finds the absolute shortest path. May take longer on hard puzzles. |
+| **Dual Convergence** | SMART & FAST | Best of both worlds | Works from both ends at once. Fast AND finds the best path. |
+| **Tactical Analysis** | BALANCED | Most puzzles | Good balance of speed and move efficiency. |
+| **Instant Velocity** | LIGHTNING | Quick results | Solves instantly but uses more moves than necessary. |
 
 **Heuristics**: All engines use **Manhattan Distance** combined with **Linear Conflict** detection to prune trillions of sub-optimal paths.
 
