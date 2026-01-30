@@ -46,15 +46,23 @@ The number of possible positions of the 24 puzzle is $\frac{25!}{2} \approx 7.76
 ## 🧠 Logic Search Engines & AI Advisor
 
 ### 🧮 Math Algorithm Engines
-This game includes algorithm search engines which navigates a search space of approximately **10.46 trillion** reachable states ($16! / 2$) to present the player with auto-solving help options. The following three well known search engines have been implemented and selected due to their ability to work quickly within the 4x4 search space. At any given puzzle arrangement, each may offer a particular solution or no solution at all given deliberate timeout constraints.
-1.  **Supreme Navigator (IDA\*)**: Guaranteed to find the *optimal* path. Uses iterative deepening to manage memory efficiently.
-2.  **Instant Velocity (Greedy-Best)**: Prioritizes speed. Uses Manhattan Distance to find "good enough" paths instantly.
-3.  **Heuristics**: Combines **Manhattan Distance** with **Linear Conflict** detection to prune trillions of sub-optimal paths.
+This game includes algorithm search engines which navigate a search space of approximately **10.46 trillion** reachable states ($16! / 2$) to present the player with auto-solving help options. Four powerful search engines have been implemented:
+
+| Engine | Tag | Optimal? | Description |
+|--------|-----|----------|-------------|
+| **Supreme Navigator** | GRANDMASTER | Yes | IDA* with iterative deepening. Memory efficient, guaranteed optimal. |
+| **Dual Convergence** | MEET-IN-MIDDLE | Yes | Bidirectional A* searching from both start and goal. Dramatically faster for complex puzzles. |
+| **Tactical Analysis** | RELIABLE | Near | Weighted A* for shallow to medium shuffles. |
+| **Instant Velocity** | HIGH VELOCITY | No | Greedy best-first search. Prioritizes speed over optimality. |
+
+**Heuristics**: All engines use **Manhattan Distance** combined with **Linear Conflict** detection to prune trillions of sub-optimal paths.
 
 ### 🔑 AI Strategic Advisor
-Provides real-time tactical insights using Google's Gemini models.
-- **API Key**: Requires a Google Gemini API key provided via `process.env.API_KEY`.
-- **Privacy**: No keys are stored in the source code.
+Provides real-time tactical insights with a hybrid hint system:
+
+- **Algorithmic Hints (Default)**: Works out of the box with no setup required. Analyzes puzzle state using Manhattan distance, quadrant analysis, and solver data to generate contextual advice.
+- **AI-Powered Hints (Optional)**: Enhanced hints using Google's Gemini models. Add your own free API key via the in-app settings button.
+- **Privacy**: No API keys are stored in source code. User keys are stored locally in browser storage only.
 
 ---
 
@@ -63,23 +71,37 @@ Provides real-time tactical insights using Google's Gemini models.
 ### Installation & Setup
 1.  **Clone the Repository**:
     ```bash
-    git clone https://github.com/your-username/15-puzzle-solver.git
+    git clone https://github.com/rodhammond/15-Puzzle-Pro.git
+    cd 15-Puzzle-Pro
     ```
-2.  **Environment Configuration**:
-    Create a `.env` file (or set environment variables in your hosting provider) with your key. This ensures your secrets are never committed to version control.
-    ```env
-    API_KEY=your_secret_gemini_api_key_here
-    ```
-3.  **Local Launch**:
-    Run a local server to handle ESM imports:
+2.  **Install Dependencies**:
     ```bash
-    npx serve .
+    npm install
     ```
+3.  **Local Development**:
+    ```bash
+    npm run dev
+    ```
+    Opens at `http://localhost:3000`
+
+4.  **Production Build & Deploy**:
+    ```bash
+    npm run build    # Build for production
+    npm run deploy   # Deploy to GitHub Pages
+    ```
+
+### Environment Configuration (Optional)
+For AI-powered hints during build, create a `.env` file:
+```env
+GEMINI_API_KEY=your_gemini_api_key_here
+```
+**Note**: This is optional! The game works fully without it using algorithmic hints. Users can also add their own API key directly in the app via the settings button.
 
 ### Usage Instructions
 - Click **START** to engage the system and begin a new session.
 - Use the **Manual Configuration** preset to test specific states or custom goals.
 - Once a solution is calculated, use the **Logic Stream Visualizer** to scroll through the historical path of the solution.
+- Click the **AI key icon** to optionally add your Gemini API key for enhanced hints.
 
 ---
 *Developed for computational enthusiasts. Mathematical solvability is verified via parity-check on every state initialization.*
