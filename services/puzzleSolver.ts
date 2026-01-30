@@ -175,9 +175,194 @@ export class PuzzleSolver {
     return null;
   }
 
+  private static bidirectionalAStar(start: BoardState, goal: BoardState): SolverResult | null {
+    const startTime = performance.now();
+
+    // Forward search data structures
+    const forwardOpen = new MinHeap<Move>();
+    const forwardClosed = new Map<string, Move>();
+    const forwardG = new Map<string, number>();
+
+    // Backward search data structures
+    const backwardOpen = new MinHeap<Move>();
+    const backwardClosed = new Map<string, Move>();
+    const backwardG = new Map<string, number>();
+
+    // Initialize forward search
+    const startMove: Move = {
+      board: start,
+      emptyIndex: start.indexOf(0),
+      direction: 'START',
+      g: 0,
+      h: this.getComplexityScore(start, goal)
+    };
+    const startKey = start.join(',');
+    forwardOpen.push(startMove, startMove.g + startMove.h);
+    forwardG.set(startKey, 0);
+
+    // Initialize backward search
+    const goalMove: Move = {
+      board: goal,
+      emptyIndex: goal.indexOf(0),
+      direction: 'START',
+      g: 0,
+      h: this.getComplexityScore(goal, start)
+    };
+    const goalKey = goal.join(',');
+    backwardOpen.push(goalMove, goalMove.g + goalMove.h);
+    backwardG.set(goalKey, 0);
+
+    let nodesVisited = 0;
+    let bestPath: Move[] | null = null;
+    let bestCost = Infinity;
+    const MAX_ITERS = 800000;
+
+    // Helper to get reverse direction
+    const reverseDir = (dir: 'UP' | 'DOWN' | 'LEFT' | 'RIGHT' | 'START'): 'UP' | 'DOWN' | 'LEFT' | 'RIGHT' | 'START' => {
+      if (dir === 'UP') return 'DOWN';
+      if (dir === 'DOWN') return 'UP';
+      if (dir === 'LEFT') return 'RIGHT';
+      if (dir === 'RIGHT') return 'LEFT';
+      return 'START';
+    };
+
+    // Helper to reconstruct path when frontiers meet
+    const reconstructPath = (forwardMove: Move, backwardMove: Move): Move[] => {
+      // Build forward path
+      const forwardPath: Move[] = [];
+      let t: Move | undefined = forwardMove;
+      while (t) {
+        forwardPath.unshift(t);
+        t = t.prevMove;
+      }
+
+      // Build backward path (reversed with corrected directions)
+      const backwardPath: Move[] = [];
+      t = backwardMove.prevMove; // Skip the meeting node (already in forward)
+      while (t) {
+        // Create new move with reversed direction
+        const reversedMove: Move = {
+          board: t.board,
+          emptyIndex: t.emptyIndex,
+          direction: reverseDir(t.direction),
+          g: t.g,
+          h: t.h
+        };
+        backwardPath.push(reversedMove);
+        t = t.prevMove;
+      }
+
+      // Combine paths - forward path leads to meeting point, backward continues to goal
+      // We need to fix the g values for the combined path
+      const combinedPath = [...forwardPath, ...backwardPath];
+      for (let i = 0; i < combinedPath.length; i++) {
+        combinedPath[i] = { ...combinedPath[i], g: i };
+      }
+
+      return combinedPath;
+    };
+
+    while ((forwardOpen.size() > 0 || backwardOpen.size() > 0) && nodesVisited < MAX_ITERS) {
+      // Expand forward
+      if (forwardOpen.size() > 0) {
+        nodesVisited++;
+        const current = forwardOpen.pop()!;
+        const currentKey = current.board.join(',');
+
+        // Check if we've already processed this with a better cost
+        if (forwardClosed.has(currentKey)) continue;
+        forwardClosed.set(currentKey, current);
+
+        // Check for meeting point with backward search
+        if (backwardClosed.has(currentKey)) {
+          const backwardMove = backwardClosed.get(currentKey)!;
+          const totalCost = current.g + backwardMove.g;
+          if (totalCost < bestCost) {
+            bestCost = totalCost;
+            bestPath = reconstructPath(current, backwardMove);
+          }
+        }
+
+        // Early termination check
+        if (bestPath && current.g + current.h >= bestCost) continue;
+
+        // Expand neighbors
+        for (const neighbor of this.getNeighbors(current, goal)) {
+          const neighborKey = neighbor.board.join(',');
+          const tentativeG = current.g + 1;
+
+          if (!forwardClosed.has(neighborKey)) {
+            const existingG = forwardG.get(neighborKey);
+            if (existingG === undefined || tentativeG < existingG) {
+              neighbor.g = tentativeG;
+              neighbor.h = this.getComplexityScore(neighbor.board, goal);
+              forwardG.set(neighborKey, tentativeG);
+              forwardOpen.push(neighbor, neighbor.g + neighbor.h);
+            }
+          }
+        }
+      }
+
+      // Expand backward
+      if (backwardOpen.size() > 0) {
+        nodesVisited++;
+        const current = backwardOpen.pop()!;
+        const currentKey = current.board.join(',');
+
+        if (backwardClosed.has(currentKey)) continue;
+        backwardClosed.set(currentKey, current);
+
+        // Check for meeting point with forward search
+        if (forwardClosed.has(currentKey)) {
+          const forwardMove = forwardClosed.get(currentKey)!;
+          const totalCost = current.g + forwardMove.g;
+          if (totalCost < bestCost) {
+            bestCost = totalCost;
+            bestPath = reconstructPath(forwardMove, current);
+          }
+        }
+
+        // Early termination check
+        if (bestPath && current.g + current.h >= bestCost) continue;
+
+        // Expand neighbors (searching toward start)
+        for (const neighbor of this.getNeighbors(current, start)) {
+          const neighborKey = neighbor.board.join(',');
+          const tentativeG = current.g + 1;
+
+          if (!backwardClosed.has(neighborKey)) {
+            const existingG = backwardG.get(neighborKey);
+            if (existingG === undefined || tentativeG < existingG) {
+              neighbor.g = tentativeG;
+              neighbor.h = this.getComplexityScore(neighbor.board, start);
+              backwardG.set(neighborKey, tentativeG);
+              backwardOpen.push(neighbor, neighbor.g + neighbor.h);
+            }
+          }
+        }
+      }
+
+      // If we have a best path and both frontiers are exhausted or exceeded cost, we're done
+      if (bestPath && forwardOpen.size() === 0 && backwardOpen.size() === 0) break;
+    }
+
+    if (bestPath) {
+      return {
+        path: bestPath,
+        steps: bestPath.length - 1,
+        timeTaken: performance.now() - startTime,
+        algorithmName: 'Bidirectional A*',
+        nodesExplored: nodesVisited
+      };
+    }
+
+    return null;
+  }
+
   public static solve(start: BoardState, algo: AlgorithmType = 'Iterative-Deepening', goal: BoardState = GOAL_STATE): SolverResult | null {
     if (!this.isSolvable(start, goal)) return null;
     if (algo === 'Iterative-Deepening') return this.idaStar(start, goal);
+    if (algo === 'Bidirectional') return this.bidirectionalAStar(start, goal);
 
     const startTime = performance.now();
     const isHeuristicBased = (algo === 'A*' || algo === 'Greedy-Best');

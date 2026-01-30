@@ -293,6 +293,7 @@ const App: React.FC = () => {
 
   const engines: { id: AlgorithmType; label: string; tag: string; color: string; desc: string; precision: string }[] = [
     { id: 'Iterative-Deepening', label: 'Supreme Navigator', tag: 'GRANDMASTER', color: 'bg-blue-500/10 text-blue-500', desc: 'Optimal results. Best for deep 4x4 paths.', precision: 'Mathematical Optimum' },
+    { id: 'Bidirectional', label: 'Dual Convergence', tag: 'MEET-IN-MIDDLE', color: 'bg-purple-500/10 text-purple-500', desc: 'Searches from both ends. Fast optimal paths.', precision: 'Mathematical Optimum' },
     { id: 'Greedy-Best', label: 'Instant Velocity', tag: 'HIGH VELOCITY', color: 'bg-yellow-500/10 text-yellow-500', desc: 'Instant solving. Paths may be suboptimal.', precision: 'Approximation' },
     { id: 'A*', label: 'Tactical Analysis', tag: 'RELIABLE', color: 'bg-green-500/10 text-green-500', desc: 'Optimal for shallow to medium shuffles.', precision: 'Weighted Optimum' },
   ];

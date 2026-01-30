@@ -1,10 +1,11 @@
 
 export type BoardState = number[];
 
-export type AlgorithmType = 
-  | 'Iterative-Deepening' 
-  | 'Greedy-Best' 
-  | 'A*';
+export type AlgorithmType =
+  | 'Iterative-Deepening'
+  | 'Greedy-Best'
+  | 'A*'
+  | 'Bidirectional';
 
 export interface Move {
   board: BoardState;
